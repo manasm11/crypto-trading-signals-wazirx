@@ -1,5 +1,5 @@
 class Signals:
-    def __init__(self, filename):
+    def __init__(self, data_directory):
         pass
 
     def should_buy(self, symbol):
