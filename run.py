@@ -5,7 +5,7 @@ import os
 
 
 def test():
-    os.system(f"python3 -m pytest -v tests " + " ".join(argv[2:]))
+    os.system(f"python3 -m pytest tests " + " ".join(argv[2:]))
 
 
 def help_():

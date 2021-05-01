@@ -5,6 +5,7 @@ import os
 import shutil
 import requests_cache
 from pytest import mark
+from unittest import TestCase
 
 requests_cache.install_cache(expire_after=360)
 
@@ -49,12 +50,12 @@ def test_crypto(data_directory_):
     symbols = Crypto.SYMBOLS
     crypto = Crypto(symbol="btc", data_directory=data_directory_)
     price = Price(
-        timestamp=datetime.now().timestamp(),
+        time=datetime.now().timestamp(),
         low=1,
         high=2,
         value=1.2,
-        volume=1000,
-        open=1.1,
+        vol=1000,
+        open_=1.1,
         sell=1.12,
         buy=1.13,
     )
@@ -92,3 +93,74 @@ def test_price(filename_):
     assert Price(value=2) and Price(value=5)
     assert Price(value=2) and 5
     assert Price(value=2) or 5
+    price = Price(10)
+    Price(
+        value=201,
+        low=190.4,
+        high=203.4,
+        open_=203,
+        vol=912234,
+        sell=2139821,
+        buy=2139321,
+        time=1619871441,
+    )
+    Price(
+        value="201",
+        low="190.4",
+        high="203.4",
+        open_="203",
+        vol="912234",
+        sell="2139821",
+        buy="2139321",
+        time="1619871441",
+    )
+    Price(
+        value="201 ",
+        low="190.4",
+        high="203.4",
+        open_="203",
+        vol="912234",
+        sell="2139821",
+        buy="2139321",
+        time=" 1619871441 ",
+    )
+    price = Price(109)
+    price.low = 123
+    price.high = 234
+    price.open_ = 456
+    price.vol = 4756
+    price.sell = 4567
+    price.time = 1234345
+    test = TestCase()
+
+    # test.assertRaises(Exception, lambda: eval("price.low = 'abcd'"))
+
+    assert price["low"] == price.low
+    assert price["high"] == price.high
+    assert price["open_"] == price.open_
+    assert price["vol"] == price.vol
+    assert price["sell"] == price.sell
+    assert price["time"] == price.time
+
+    attrs = ["low", "high", "open_", "vol", "sell", "time"]
+    data = vars(price)
+    for attr in attrs:
+        assert attr in data.keys()
+
+    for attr in attrs:
+        try:
+            exec(f"price.{attr} = '3xx54'")
+        except ValueError as e:
+            print(str(e))
+        else:
+            assert False, "Error not raised"
+
+    for attr in attrs:
+        try:
+            price["low"] = "abcd"
+        except ValueError as e:
+            assert "could not convert" in str(e)
+        else:
+            assert False, "Error not raised"
+
+    price.save(filename_)
