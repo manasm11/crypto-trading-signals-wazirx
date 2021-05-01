@@ -4,7 +4,10 @@ from datetime import datetime
 
 
 def test_crypto(data_directory_):
-    Crypto.all(data_directory=data_directory_)
+    all_ = Crypto.all(data_directory=data_directory_)
+    (_ for _ in all_)  # Check if all_ is iterable
+    assert len(all_) > 0
+    assert isinstance(all_, list)
     Crypto.update(data_directory=data_directory_)
     symbols = Crypto.SYMBOLS
 
