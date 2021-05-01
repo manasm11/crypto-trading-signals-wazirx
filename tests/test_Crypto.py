@@ -3,12 +3,12 @@ from crypto_signals._Price import Price
 from datetime import datetime
 
 
-def test_crypto(filename_):
-    Crypto.all(filename=filename_)
-    Crypto.update(filename=filename_)
+def test_crypto(data_directory_):
+    Crypto.all(data_directory=data_directory_)
+    Crypto.update(data_directory=data_directory_)
     symbols = Crypto.SYMBOLS
 
-    crypto = Crypto(symbol="btc", filename=filename_)
+    crypto = Crypto(symbol="btc", data_directory=data_directory_)
 
     price = Price(
         timestamp=datetime.now().timestamp(),

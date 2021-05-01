@@ -3,10 +3,10 @@ from crypto_signals import Signals
 
 
 @fixture(scope="function")
-def signals_(filename_):
-    return Signals(filename_)
+def signals_(data_directory_):
+    return Signals(data_directory=data_directory_)
 
 
 @fixture(scope="session")
-def filename_():
-    return "data/crypto.csv"
+def data_directory_():
+    return "data"
