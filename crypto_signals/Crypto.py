@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import requests
+import csv
 
 
 class Crypto:
@@ -19,7 +20,7 @@ class Crypto:
         if not os.path.exists(data_directory):
             os.makedirs(data_directory)
         filename = os.path.join(data_directory, "btc.csv")
-        Path(filename).touch()
+        # Path(filename).touch()
 
     @classmethod
     def _get_data_from_api(cls):
@@ -39,13 +40,14 @@ class Crypto:
 
 class Price(float):
     attrs = [
+        "time",
+        "price",
         "low",
         "high",
         "open_",
         "vol",
         "sell",
         "buy",
-        "time",
     ]
 
     def __new__(self, value, **kwargs):
@@ -83,3 +85,18 @@ class Price(float):
     def __setattr__(self, name, value):
         value = float(value)
         return super().__setattr__(name, value)
+
+    def todict(self):
+        d = vars(self)
+        d["price"] = self
+        return d
+
+    def save(self, filename):
+        dir_ = os.path.join(*os.path.split(filename)[:-1])
+        if not os.path.exists(dir_):
+            raise NotADirectoryError(f"{dir_} not found")
+        Path(filename).touch()
+        with open(filename, "a") as file_:
+            writer = csv.writer(file_)
+            row = [self[attr] for attr in self.attrs]
+            writer.writerow(row)
